@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  django-api-db:
+    image: postgres:12
+    container_name: django-api-db
+    environment:
+      POSTGRES_PASSWORD: example
+  django-api:
+    container_name: django-api
+    build: ./django-api/
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./django-api/:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - django-api-db
+  flask-api:
+    container_name: flask-api
+    build: ./mock-weather-api/
+    command: python app.py flask run
+    volumes:
+      - ./mock-weather-api/:/app
+    ports: 
+      - "5000:5000"
